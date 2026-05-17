@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 
+
 import {
   Menu,
   X,
@@ -26,6 +27,7 @@ const Navbar = () => {
   const [isAdmin, setIsAdmin] = useState(false);
 
   const location = useLocation();
+  if (location.pathname === "/") return null;
 
   // AUTH
   useEffect(() => {
