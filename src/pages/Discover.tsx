@@ -137,7 +137,7 @@ const Discover = () => {
   useEffect(() => {
     if (!currentUser) return;
 
-    let matched = users
+    const matched = users
       .map((u) => ({
         ...u,
         score: getMatchScore(u),
