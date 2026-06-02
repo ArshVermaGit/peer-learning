@@ -6,6 +6,7 @@ import chatRoutes from "./routers/chatRoutes.js";
 import aiRoutes from "./routers/aiRoutes.js";
 import matchRoutes from "./routers/matchRoutes.js";
 import authRoutes from "./routers/authRoutes.js";
+import cronRoutes from "./routers/cronRoutes.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 
 const app = express();
@@ -73,6 +74,7 @@ app.use("/api/ai", aiRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api", chatRoutes);
 app.use("/api/match", matchRoutes);
+app.use("/api/cron", cronRoutes);
 
 // 404 handler for unmatched routes
 app.use((_req, res) => {
