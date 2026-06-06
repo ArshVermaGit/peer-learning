@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState, ReactNode, useCallback, useRef } from "react";
+import { createContext, useEffect, useState, ReactNode, useCallback, useRef, useMemo } from "react";
 import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { API_BASE_URL } from "@/config/api";
@@ -224,7 +224,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
   }, [ensureProfileExists]);
 
-  const signUp = async (email: string, password: string, name: string) => {
+  const signUp = useCallback(async (email: string, password: string, name: string) => {
     try {
       const { error } = await supabase.auth.signUp({
         email,
@@ -242,9 +242,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const normalizedError = err instanceof Error ? err : new Error(String(err));
       return { error: normalizedError };
     }
-  };
+  }, []);
 
-  const signIn = async (email: string, password: string) => {
+  const signIn = useCallback(async (email: string, password: string) => {
     try {
       const { error } = await supabase.auth.signInWithPassword({
         email,
@@ -258,13 +258,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const normalizedError = err instanceof Error ? err : new Error(String(err));
       return { error: normalizedError };
     }
-  };
+  }, []);
 
   const retrySyncSessionCookie = useCallback(async () => {
     await syncSessionCookie(session, setCookieSynced);
   }, [session]);
 
-  const signOut = async () => {
+  const signOut = useCallback(async () => {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
@@ -274,10 +274,33 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const normalizedError = err instanceof Error ? err : new Error(String(err));
       return { error: normalizedError };
     }
-  };
+  }, []);
+
+  const value = useMemo(() => ({
+    session,
+    user,
+    loading,
+    needsOnboarding,
+    setNeedsOnboarding,
+    cookieSynced,
+    retrySyncSessionCookie,
+    signUp,
+    signIn,
+    signOut
+  }), [
+    session,
+    user,
+    loading,
+    needsOnboarding,
+    cookieSynced,
+    retrySyncSessionCookie,
+    signUp,
+    signIn,
+    signOut
+  ]);
 
   return (
-    <AuthContext.Provider value={{ session, user, loading, needsOnboarding, setNeedsOnboarding, cookieSynced, retrySyncSessionCookie, signUp, signIn, signOut }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
