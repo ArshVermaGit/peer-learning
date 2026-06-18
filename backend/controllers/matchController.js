@@ -131,8 +131,8 @@ export const getRecommendedPartners = async (req, res) => {
       };
     });
 
-    // In a real paginated RPC, getting exact total Count requires a separate count query. 
-    // We'll estimate or just provide length for now since counting 1M rows can also be slow.
+    // Fetch limit+1 rows so we can set hasNextPage without a separate COUNT query.
+    // The extra row is trimmed before returning; it only signals whether more results exist.
    const hasNextPage = recommendations.length > limit;
 
     res.status(200).json({
