@@ -80,8 +80,7 @@ const EditProfile = () => {
                   .filter(Boolean)
               : profile.skills,
         })
-        // @ts-expect-error TODO: refine typing
-        .eq("id", userId);
+        .eq("id", userId as string);
 
       if (error) throw error;
       toast.success(t("editProfile.successMsg"));
